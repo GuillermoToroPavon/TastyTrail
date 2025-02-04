@@ -3,17 +3,35 @@ package com.guillermotoropavon.tastytrail.data.model
 import com.guillermotoropavon.tastytrail.domain.model.Recipe
 
 data class RecipeDto(
-    val id: Int,
-    val name: String,
-    val ingredients: String,
-    val instructions: String
+    val idMeal: String,
+    val strMeal: String,
+    val strMealThumb: String,
+    val strInstructions: String?,
+    val strIngredient1: String?,
+    val strIngredient2: String?,
+    val strIngredient3: String?,
+    val strIngredient4: String?,
+    val strIngredient5: String?,
+    val strIngredient6: String?,
+    val strIngredient7: String?,
+    val strIngredient8: String?,
+    val strIngredient9: String?,
+    val strIngredient10: String?
 )
 
+// Función de extensión para convertir RecipeDto a Recipe (dominio)
 fun RecipeDto.toDomain(): Recipe {
+    val ingredients = listOfNotNull(
+        strIngredient1, strIngredient2, strIngredient3, strIngredient4,
+        strIngredient5, strIngredient6, strIngredient7, strIngredient8,
+        strIngredient9, strIngredient10
+    ).filter { it.isNotBlank() }
+
     return Recipe(
-        id = this.id,
-        name = this.name,
-        ingredients = this.ingredients.split(","),
-        instructions = this.instructions
+        id = idMeal.toInt(), // La API devuelve `idMeal` como String, lo convertimos a Int
+        name = strMeal,
+        imageUrl = strMealThumb,
+        ingredients = ingredients,
+        instructions = strInstructions ?: ""
     )
 }
