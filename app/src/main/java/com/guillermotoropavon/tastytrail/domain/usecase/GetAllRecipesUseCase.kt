@@ -9,6 +9,6 @@ class GetAllRecipesUseCase @Inject constructor(
     private val recipeRepository: RecipeRepository
 ) {
     suspend fun execute(): Flow<List<Recipe>> {
-        return recipeRepository.getRecipesByName("") // Deja el query vacío para obtener todas las recetas
+        return recipeRepository.getRecipesByName("")
     }
 }
