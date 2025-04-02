@@ -28,11 +28,10 @@ fun AppNavigation(navController: NavHostController, recipes: List<Recipe>) {
 
         composable(
             route = Screen.RecipeDetail.route,
-            arguments = listOf(navArgument("id") { type = NavType.IntType }) // Aseguramos que 'id' sea un Int
+            arguments = listOf(navArgument("id") { type = NavType.IntType })
         ) { backStackEntry ->
-            val recipeId = backStackEntry.arguments?.getInt("id") // Obtenemos el ID de la receta
-            val recipe = recipes.find { it.id == recipeId } // Buscamos la receta en la lista
-
+            val recipeId = backStackEntry.arguments?.getInt("id")
+            val recipe = recipes.find { it.id == recipeId }
             if (recipe != null) {
                 RecipeDetailScreen(recipe) // Mostramos la pantalla de detalles solo si la receta existe
             }

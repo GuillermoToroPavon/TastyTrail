@@ -19,7 +19,7 @@ data class RecipeDto(
     val strIngredient10: String?
 )
 
-// Función de extensión para convertir RecipeDto a Recipe (dominio)
+// La base de datos trae los ingredientes implementados de esta manera por eso se pasan a una lista
 fun RecipeDto.toDomain(): Recipe {
     val ingredients = listOfNotNull(
         strIngredient1, strIngredient2, strIngredient3, strIngredient4,
@@ -28,7 +28,7 @@ fun RecipeDto.toDomain(): Recipe {
     ).filter { it.isNotBlank() }
 
     return Recipe(
-        id = idMeal.toInt(), // La API devuelve `idMeal` como String, lo convertimos a Int
+        id = idMeal.toInt(),
         name = strMeal,
         imageUrl = strMealThumb,
         ingredients = ingredients,

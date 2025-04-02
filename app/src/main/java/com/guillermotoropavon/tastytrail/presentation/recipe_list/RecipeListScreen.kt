@@ -26,7 +26,7 @@ fun RecipeListScreen(
     var searchText by remember { mutableStateOf("") }
     var isSearching by remember { mutableStateOf(false) } // Estado para mostrar u ocultar búsqueda
 
-    // Filtrar recetas según el texto de búsqueda
+    // Filtrar recetas por ingredientes o nombre
     val filteredRecipes = recipes.filter { recipe ->
         recipe.name.contains(searchText, ignoreCase = true) ||
                 recipe.ingredients.any { it.contains(searchText, ignoreCase = true) }
@@ -46,7 +46,6 @@ fun RecipeListScreen(
                         modifier = Modifier.fillMaxWidth()
                     )
                 } else {
-                    // Título normal cuando no está buscando
                     Text("Tasty Trail")
                 }
             },
@@ -65,7 +64,7 @@ fun RecipeListScreen(
             }
         )
 
-        // Si la lista filtrada está vacía, mostramos un mensaje
+        // Si la lista filtrada está vacía, se muestra un mensaje
         if (filteredRecipes.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = androidx.compose.ui.Alignment.Center) {
                 Text("No recipes found", style = MaterialTheme.typography.bodyLarge)
