@@ -6,13 +6,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.guillermotoropavon.tastytrail.domain.model.Recipe
@@ -21,27 +21,58 @@ import com.guillermotoropavon.tastytrail.domain.model.Recipe
 @Composable
 fun RecipeListScreen(
     recipes: List<Recipe>,
-    onRecipeClick: (Int) -> Unit // Ahora recibe solo el ID de la receta
+    onRecipeClick: (Int) -> Unit
 ) {
+    var searchText by remember { mutableStateOf("") }
+    var isSearching by remember { mutableStateOf(false) } // Estado para mostrar u ocultar búsqueda
+
+    // Filtrar recetas según el texto de búsqueda
+    val filteredRecipes = recipes.filter { recipe ->
+        recipe.name.contains(searchText, ignoreCase = true) ||
+                recipe.ingredients.any { it.contains(searchText, ignoreCase = true) }
+    }
+
     Column(modifier = Modifier.fillMaxSize()) {
-        // Barra de navegación superior
+        // Barra de navegación superior con icono de búsqueda
         TopAppBar(
-            title = { Text("Tasty Trail") },
+            title = {
+                if (isSearching) {
+                    // Campo de búsqueda cuando está activado
+                    TextField(
+                        value = searchText,
+                        onValueChange = { searchText = it },
+                        placeholder = { Text("Search...") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                } else {
+                    // Título normal cuando no está buscando
+                    Text("Tasty Trail")
+                }
+            },
             actions = {
-                IconButton(onClick = { /* Acción de búsqueda */ }) {
-                    Icon(Icons.Filled.Search, contentDescription = "Buscar recetas")
+                if (isSearching) {
+                    // Botón para cerrar búsqueda
+                    IconButton(onClick = { isSearching = false; searchText = "" }) {
+                        Icon(Icons.Filled.Close, contentDescription = "Cerrar búsqueda")
+                    }
+                } else {
+                    // Botón para activar búsqueda
+                    IconButton(onClick = { isSearching = true }) {
+                        Icon(Icons.Filled.Search, contentDescription = "Buscar recetas")
+                    }
                 }
             }
         )
 
-        // Si la lista está vacía, mostramos un mensaje
-        if (recipes.isEmpty()) {
+        // Si la lista filtrada está vacía, mostramos un mensaje
+        if (filteredRecipes.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = androidx.compose.ui.Alignment.Center) {
                 Text("No recipes found", style = MaterialTheme.typography.bodyLarge)
             }
         } else {
             LazyColumn(modifier = Modifier.padding(8.dp)) {
-                items(recipes) { recipe ->
+                items(filteredRecipes) { recipe ->
                     RecipeCard(recipe, onRecipeClick)
                 }
             }
@@ -49,14 +80,13 @@ fun RecipeListScreen(
     }
 }
 
-// Composable para mostrar una receta como tarjeta
 @Composable
 fun RecipeCard(recipe: Recipe, onRecipeClick: (Int) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable { onRecipeClick(recipe.id) }, // Pasamos solo el ID de la receta
+            .clickable { onRecipeClick(recipe.id) },
         shape = RectangleShape,
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
@@ -74,15 +104,4 @@ fun RecipeCard(recipe: Recipe, onRecipeClick: (Int) -> Unit) {
             }
         }
     }
-}
-
-// Vista previa de la lista con recetas de prueba
-@Preview(showBackground = true)
-@Composable
-fun PreviewRecipeListScreen() {
-    val sampleRecipes = listOf(
-        Recipe(1, "Sushi", "https://www.themealdb.com/images/media/meals/g046bb1663960946.jpg", listOf("Rice", "Fish", "Seaweed"), "Instructions here..."),
-        Recipe(2, "Pasta", "https://www.themealdb.com/images/media/meals/ustsqw1468250014.jpg", listOf("Pasta", "Tomato", "Cheese"), "Instructions here...")
-    )
-    RecipeListScreen(recipes = sampleRecipes, onRecipeClick = {})
 }
