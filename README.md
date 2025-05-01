@@ -12,7 +12,7 @@ Jetpack Navigation Compose para navegación fluida entre pantallas.
 
 Hilt para inyección de dependencias, facilitando el manejo de componentes desacoplados y testables.
 
-Arrow para programación funcional en Kotlin, utilizando estructuras como Either y Option para manejar errores y valores opcionales de forma segura.
+Arrow para el manejo de errores y estructuras funcionales (como Either, Option, etc.), asegurando un flujo de datos robusto y predecible.
 
 Search bar interactiva para filtrar recetas en tiempo real por nombre o ingredientes.
 
